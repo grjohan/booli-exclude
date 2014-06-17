@@ -5,9 +5,6 @@
   "description": "Exclude hits from Booli search",
   "version": "0.1",
 
-  "background": {
-    "scripts": ["background.js"]
-  },
   "permissions": [
     "http://www.booli.se/*"
   ],

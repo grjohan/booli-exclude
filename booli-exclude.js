@@ -23,38 +23,41 @@ function removeExclusions(exclusions) {
       	}
     }
 }
-
-	var query = '[id*=extendedRefine]';
+	var query = '[id*=refineBox]';
     var elems = document.querySelectorAll(query);
     var newElem = document.createElement('div');
-    newElem.className="listings col1";
-    newElem.innerHTML = "<strong>Excludera områden:</strong> <input type='text' id='extensionInput'></input>";
+    newElem.className="col1";
+    newElem.innerHTML = "<strong>Excludera områden:</strong>";
     elems[0].appendChild(newElem);
+    var inputElem = document.createElement('input');
+    inputElem.type="text";
+    inputElem.name="exclusions";
+    inputElem.className="autocomplete";
+    var tempExclusionString = localStorage["booli.exclusions"];
+    if(tempExclusionString !== undefined){
+        var i;
+        var partsOfStr = tempExclusionString.split(',');
+        for(i = 0; i< partsOfStr.length ; i++) {
+        partsOfStr[i] = partsOfStr[i].trim();
+        removeExclusions(partsOfStr);
+      }
+    }
+    newElem.appendChild(inputElem);
 
 
 	var query = '[class*=showHits]';
     var elems = document.querySelectorAll(query);
-    var query = '[id*=extensionInput]';
-   	var inputElem = document.querySelectorAll(query);
     elems[0].onclick = function() {
-    	exclusionString = inputElem[0].value;
+    	exclusionString = inputElem.value;
+      localStorage["booli.exclusions"] = exclusionString; 
     	var partsOfStr = exclusionString.split(',');
     	var i;
     	for(i = 0; i< partsOfStr.length ; i++) {
     		partsOfStr[i] = partsOfStr[i].trim();
     	}
-    	chrome.runtime.sendMessage({
-   		message : "setExclusion",
-		exclusion : partsOfStr}
-		);
 		removeExclusions(partsOfStr);
     };
     
-	
- chrome.runtime.sendMessage(
-	{message : "getExclusions"},
-    function(respondedExclusions) {
-    	removeExclusions(respondedExclusions);
-  }
- );
-// in the callback go through the DOM and remove all objects that should be removed.
+ var query = '[class*=toggleRefine]';
+ var elems = document.querySelectorAll(query);
+
